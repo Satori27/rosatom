@@ -3,7 +3,7 @@ version: '3'
 services:
   test-web:
     container_name: test-web
-    image: test-rosatom
+    image: satori27/test-rosatom:v1.0.2
     command: /bin/sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
     environment:
       TEST_DB_PORT: ${TEST_DB_PORT}
