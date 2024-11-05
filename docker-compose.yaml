@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  web:
+    container_name: web
+    image: satori27/rosatom:v1.0.1
+    command: /bin/sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    environment:
+      DB_HOST: pg
+    depends_on:
+      pg:
+        condition: service_healthy
+    ports:
+      - 10301:8000
+    networks:
+      - atom-network
+    restart: always
+    env_file:
+      - .env
+
+  pg:
+    image: postgres:14
+    container_name: pg
+    volumes:
+      - atom-pg:/var/lib/postgresql/data
+
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", '${DB_NAME}', "-U", '$DB_NAME'] 
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    
+    networks:
+      - atom-network
+
+volumes:
+  atom-pg:
+    name: atom-pg
+
+networks:
+  atom-network:
+
+
+

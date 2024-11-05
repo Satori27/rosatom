@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  test-web:
+    container_name: test-web
+    image: test-rosatom
+    command: /bin/sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    environment:
+      TEST_DB_PORT: ${TEST_DB_PORT}
+      TEST_DB_HOST: test-pg
+      TEST_DB_NAME: ${TEST_DB_NAME}
+      TEST_DB_USER: ${TEST_DB_USER}
+      TEST_DB_PASS: ${TEST_DB_PASS}
+    depends_on:
+      test-pg:
+        condition: service_healthy
+    ports:
+      - 10302:8000
+    networks:
+      - test-atom-network
+    restart: always
+    env_file:
+      - .test-env
+
+  test-pg:
+    image: postgres:14
+    container_name: test-pg
+    volumes:
+      - test-atom-pg:/var/lib/postgresql/data
+
+    environment:
+      POSTGRES_DB: ${TEST_DB_NAME}
+      POSTGRES_USER: ${TEST_DB_USER}
+      POSTGRES_PASSWORD: ${TEST_DB_PASS}
+
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", '${TEST_DB_NAME}', "-U", '${TEST_DB_NAME}'] 
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    
+    networks:
+      - test-atom-network
+
+volumes:
+  test-atom-pg:
+    name: test-atom-pg
+
+networks:
+  test-atom-network:

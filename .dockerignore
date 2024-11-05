@@ -1,0 +1,7 @@
+env/
+__pycache__
+
+*.env
+*.env.*
+.test-env
+todo.txt

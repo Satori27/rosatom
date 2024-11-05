@@ -1,0 +1,14 @@
+SECRET_KEY=jlkjdasSSSSkiidmn
+ALGORITHM=HS256
+TEST_DB_PORT=5432
+TEST_DB_USER=test_atom
+TEST_DB_PASS=test_atom
+TEST_DB_NAME=test_atom
+DB_PORT=5432
+DB_USER=atom
+DB_PASS=atom
+DB_NAME=atom
+ADMIN_LOGIN=admin
+ADMIN_PASSWORD=admin
+ADMIN_EMAIL=admin@gmail.com
+ENVIRONMENT=test
